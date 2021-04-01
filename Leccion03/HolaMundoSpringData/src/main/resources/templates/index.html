@@ -5,29 +5,15 @@
         <meta charset="UTF-8">
     </head>
     <body>
-        <h1>Inicio</h1>
-        <!--Para acceder a la variable compartida desde el modelo-->
-        <p th:text="${mensaje}"></p>
-        <p th:text="${saludo}"></p>
-        <br/>
-        Nombre: <span th:text="${persona.nombre}">Mostrar</span>
-        <br/>
-        Apellido: <span th:text="${persona.apellido}">Mostrar</span>
-        <br/>
-        Email: <span th:text="${persona.email}">Mostrar</span>
-        <br/>
-        Telefono: <span th:text="${persona.telefono}">Mostrar</span>
-        <br/>
-        <br/>
 
         <!-- Usar condicion para mostrar cuando la lista no venga vacía -->
         <div th:if="${personas != null and !personas.empty}">
             <table border="1">
                 <tr>
                     <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
                 </tr>
                 <!-- Iterar una lista obtenida del modelo -->
                 <tr th:each="personaIterar : ${personas}">

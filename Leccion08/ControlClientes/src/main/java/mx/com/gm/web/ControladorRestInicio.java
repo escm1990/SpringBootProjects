@@ -1,14 +1,15 @@
-package mx.com.gm;
+package mx.com.gm.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import mx.com.gm.servicio.PersonaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import mx.com.gm.domain.Persona;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.Errors;
 
 /*Para implementar SpringMVC, usamos la anotación @Controller*/
 @Controller
@@ -16,43 +17,64 @@ import mx.com.gm.domain.Persona;
 @Slf4j
 public class ControladorRestInicio {
     
-    //Accediendo al valor declarado en archivo de propiedades
-    //por medio de injección de dependencias
-    @Value("${index.saludo}")
-    private String saludo; //con la anotación Value se injecta el valor de la clave-valor del archivo de properties
+    //Injección de dependencias de la clase de servicio que maneja transaccionalidad
+    @Autowired //símil de la anotación Inject de Java EE
+    private PersonaService personaService;
     
     /*Para que el navegador interprete que este método,
      se debe ejecutar y se debe mapear a un path*/
     @GetMapping("/") //responde a localhost:8080
     public String inicio(Model model){
-        //A través del objeto Model vamos a compartir información con la vista
-        var mensajeCompartir = "Hola mundo con Thymeleaf";
-        
-        var persona = new Persona();
-        persona.setNombre("Juan");
-        persona.setApellido("Perez");
-        persona.setEmail("jp@correo.com");
-        persona.setTelefono("55443322");
-        
-        var persona2 = new Persona();
-        persona2.setNombre("Maria");
-        persona2.setApellido("Luisa");
-        persona2.setEmail("ml@correo.com");
-        persona2.setTelefono("11223344");
-        
-//        List<Persona> personas = new ArrayList();
-//        personas.add(persona);
-//        personas.add(persona2);
-        
-        //otra forma de crear arreglo de personas
-        var personas = Arrays.asList(persona, persona2);
-
+    
+        var personas = personaService.listarPersona();
         log.info("Ejecutando el controlador de tipo Spring MVC");
-        model.addAttribute("mensaje",mensajeCompartir);
-        model.addAttribute("saludo",saludo);
-        model.addAttribute("persona",persona);
         model.addAttribute("personas",personas);
         return "index"; 
+    }
+    
+    @GetMapping("/agregar")
+    /*No es necesario crear una instancia de Persona dentro del método, ya que
+    basta con definirlo como un argumento más en el método, dentro de la fábrica
+    de Spring se buscará un objeto de tipo persona y si no existe creará uno y 
+    lo inyectará de manera automática en el método.*/
+    public String agregar(Persona persona){
+        //redirigiendo a la vista
+        return "administrarPersona";
+    }
+    
+    @PostMapping("/guardar")
+    /*Spring recupera el objeto que se llenará del formulario, los nombres del
+    objeto en el formulario y en el parámetro del método deben coincidir, para
+    que Spring realice la inyección del objeto "persona"*/
+    //@Valid indica que se va a validar el objeto que se llena desde el formulario
+    public String guardar(@Valid Persona persona, Errors errores){ 
+        //La clase Errors manejará los errores en caso de haberlos
+        if(errores.hasErrors()){
+            return "administrarPersona";
+        }
+        
+        personaService.guardar(persona);
+        return "redirect:/"; //redireccionando a la página de inicio
+    }
+ 
+    /*Cuando se utilizan parámetros en el path, el nombre de la variable debe
+    ser exactamente igual al de la propiedad del objeto que se usará. Con el
+    parámetro, Spring automáticamente va a asociar el valor del parámetro con
+    el objeto (en este caso persona), es decir, que inicialzará el objeto 
+    "persona" con el valor de "id_persona". No es necesaria la inicialización
+    del objeto persona ni hacer set del valor de idPersona.
+    La variable de modelo se compartirá en la siguiente petición.*/
+    @GetMapping("/editar/{id_persona}")
+    public String editar(Persona persona, Model model){
+        persona = personaService.encontrarPersona(persona);
+        model.addAttribute("persona",persona);
+        return "administrarPersona";
+    }
+    
+    @GetMapping("/eliminar")
+    public String eliminar(Persona persona){
+        personaService.eliminar(persona);
+        return "redirect:/";
     }
     
 }

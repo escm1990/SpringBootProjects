@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Plantilla</title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <!-- Para reutilizar una porción de una página thimeleaf se usa
+        el concepto de fragmento, al cual se le asigna un nombre UNICO-->
+        <header th:fragment="encabezado">
+            <!-- Insersión desde el archivo messages.properties -->
+            <h1 th:text="#{plantilla.titulo}">Titulo</h1>
+        </header>
+        
+        <!-- Insersión de mensaje con nomenclatura de doble corchete -->
+        <footer th:fragment="pie">
+            <p>[[#{plantilla.pie}]] <a href="http://www.fragmentosdecodigo.home.blog" target="_blank">Fragmentos de Codigo</a></p>
+        </footer>
+    </body>
+</html>

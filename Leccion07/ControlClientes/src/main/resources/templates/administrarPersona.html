@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Datos de la persona</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <!-- Insertar un fragmento de una plantilla -->
+        <header th:replace="plantillas/plantilla :: encabezado"/>
+        
+        <h2>Datos de la persona</h2>
+        <br/>
+        <a th:href="@{/}">Regresar</a>
+        <br/>
+        <br/>
+        <!-- 
+            Formulario asociado al mapeo de la acción Guardar del Controlador
+            th:object="${objeto_asociado}"
+            th:field="*{nombre_campo_objeto_asociado}"
+        -->
+        <form th:action="@{/guardar}" method="post" th:object="${persona}">
+            <!-- Si el valor del id está vacío, se hará un insert, si no 
+            un update. Esto lo gestiona el método personaService.guardar(persona)
+            de manera automática por medio de este campo-->
+            <input type="hidden" name="id_persona" th:field="*{id_persona}"/>
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" th:field="*{nombre}"/>
+            <!-- Evaluar validaciones -->
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error del nombre </span>
+            <br/>
+            <label for="apellido">Apellido</label>
+            <input type="text" name="apellido" th:field="*{apellido}"/>
+            <!-- Evaluar validaciones -->
+            <span th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}">Error del apellido </span>
+            <br/>
+            <label for="email">Email</label>
+            <input type="text" name="email" th:field="*{email}"/>
+            <!-- Evaluar validaciones -->
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error del email </span>
+            <br/>
+            <label for="telefono">Tel&eacute;fono</label>
+            <input type="tel" name="telefono" th:field="*{telefono}"/>
+            <br/>
+            <input type="submit" name="guardar" value="Guardar"/>
+        </form>
+        
+        <!-- Insertar un fragmento de una plantilla -->
+        <footer th:replace="plantillas/plantilla :: pie"/>
+        
+    </body>
+</html>

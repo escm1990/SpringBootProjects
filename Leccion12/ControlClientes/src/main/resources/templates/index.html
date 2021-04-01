@@ -1,33 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <title>Inicio</title>
         <meta charset="UTF-8">
     </head>
     <body>
-        <h1>Inicio</h1>
-        <!--Para acceder a la variable compartida desde el modelo-->
-        <p th:text="${mensaje}"></p>
-        <p th:text="${saludo}"></p>
-        <br/>
-        Nombre: <span th:text="${persona.nombre}">Mostrar</span>
-        <br/>
-        Apellido: <span th:text="${persona.apellido}">Mostrar</span>
-        <br/>
-        Email: <span th:text="${persona.email}">Mostrar</span>
-        <br/>
-        Telefono: <span th:text="${persona.telefono}">Mostrar</span>
-        <br/>
-        <br/>
-
+        
+        <!-- Insertar un fragmento de una plantilla -->
+        <header th:replace="plantillas/plantilla :: encabezado"/>
+        
+        <!--Crear links en Thymeleaf (validado con seguridad) -->
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/agregar}">[[#{persona.crear}]] </a>
+        
+        <br>
         <!-- Usar condicion para mostrar cuando la lista no venga vacía -->
         <div th:if="${personas != null and !personas.empty}">
             <table border="1">
                 <tr>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
+                    <th>[[#{persona.nombre}]]</th>
+                    <th>[[#{persona.apellido}]]</th>
+                    <th>[[#{persona.email}]]</th>
+                    <th>[[#{persona.telefono}]]</th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')">[[#{accion.editar}]]</th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')">[[#{accion.eliminar}]]</th>
                 </tr>
                 <!-- Iterar una lista obtenida del modelo -->
                 <tr th:each="personaIterar : ${personas}">
@@ -35,13 +31,19 @@
                     <td th:text="${personaIterar.apellido}">Mostrar</td>
                     <td th:text="${personaIterar.email}">Mostrar</td>
                     <td th:text="${personaIterar.telefono}">Mostrar</td>
+                    <td sec:authorize="hasRole('ROLE_ADMIN')"><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/editar/} + ${personaIterar.id_persona}" th:text="#{accion.editar}"/></td> <!--A este tipo de concatenación se le llama Path Variable-->
+                    <td sec:authorize="hasRole('ROLE_ADMIN')"><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/eliminar(id_persona=${personaIterar.id_persona})}" th:text="#{accion.eliminar}"/></td> <!-- Otra forma de concatenación -->
                 </tr>
             </table>
         </div>
         
         <!-- Usar condicion para mostrar mensaje cuando la lista venga vacía -->
         <div th:if="${personas == null and personas.empty}">
-            La lista de personas está vacía.
+            [[#{persona.lista.vacia}]]
         </div>
+        
+        <!-- Insertar un fragmento de una plantilla -->
+        <footer th:replace="plantillas/plantilla :: pie"/>
+        
     </body>
 </html>

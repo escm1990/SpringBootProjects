@@ -6,28 +6,21 @@
     </head>
     <body>
         <h1>Inicio</h1>
-        <!--Para acceder a la variable compartida desde el modelo-->
-        <p th:text="${mensaje}"></p>
-        <p th:text="${saludo}"></p>
-        <br/>
-        Nombre: <span th:text="${persona.nombre}">Mostrar</span>
-        <br/>
-        Apellido: <span th:text="${persona.apellido}">Mostrar</span>
-        <br/>
-        Email: <span th:text="${persona.email}">Mostrar</span>
-        <br/>
-        Telefono: <span th:text="${persona.telefono}">Mostrar</span>
-        <br/>
-        <br/>
-
+        
+        <!--Crear links en Thymeleaf-->
+        <a th:href="@{/agregar}">Crear persona</a>
+        
+        <br>
         <!-- Usar condicion para mostrar cuando la lista no venga vacía -->
         <div th:if="${personas != null and !personas.empty}">
             <table border="1">
                 <tr>
                     <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
-                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
                 <!-- Iterar una lista obtenida del modelo -->
                 <tr th:each="personaIterar : ${personas}">
@@ -35,6 +28,8 @@
                     <td th:text="${personaIterar.apellido}">Mostrar</td>
                     <td th:text="${personaIterar.email}">Mostrar</td>
                     <td th:text="${personaIterar.telefono}">Mostrar</td>
+                    <td><a th:href="@{/editar/} + ${personaIterar.id_persona}" th:text="Editar"/></td> <!--A este tipo de concatenación se le llama Path Variable-->
+                    <td><a th:href="@{/eliminar(id_persona=${personaIterar.id_persona})}" th:text="Eliminar"/></td> <!-- Otra forma de concatenación -->
                 </tr>
             </table>
         </div>
