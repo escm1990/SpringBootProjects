@@ -1,0 +1,64 @@
+- En la carpeta resources/static van los recursos accesibles por el usuario (imagenes, sitios web, etc).
+- En la sección de Maven, se ejecuta la app en spring-boot:run
+
+Controller
+- Para comenzar a crear el servicio se crean los controllers, los que manejan las direcciones de URL
+- Con la anotación @RestController se declara una clase como controlador
+- @RequestMapping nos sirve para definir la URL
+
+Models
+- Acá se colocan los modelos
+
+Usuarios.js
+- Se hace un llamado al servidor mediante fetch en JS
+- Desde el llamado asincrónico se invoca la URL mapeada del método que retorna los usuarios
+- Usando el selector css de la tabla "usuarios" se va a poblar la misma
+
+Base de datos
+- Una vez creada la base de datos, se procede a crear el paquete DAO (Data Access Object)
+- Son las clases que representan el acceso a la base y a los datos
+- Se crea la interfaz que contendrá los métodos a implementar
+- En la clase Java de implementación, se utilizan las anotaciones @Transactional y @Repository
+- Se agregan al pom.xml las dependencias de spring-data-jpa y mysql
+- Se agregan las anotaciones correspondientes en el modelo, que es una representación de la tabla de base de datos.
+- Lombok te facilita las cosas en cuanto a ahorrar código
+- En el archivo de resources *application.properties* va la conexión a la base de datos
+
+Inyección de dependencias
+- @Autowired se usa dentro del controlador para crear un objeto UsuarioDao y estará disponible para su uso
+
+Eliminar Usuario
+- Se define la URL y el método por el cuál se hará la eliminación
+- @RequestMapping(value = "api/usuario/{id}", method = RequestMethod.DELETE)
+- En la implementación se hace uso de remove
+- Se le da la funcionalidad al botón Eliminar desde el javascript
+
+Registrar Usuario
+- Por medio de Javascript, el llamado será por medio del método POST
+- En el Controller se crea la lógica para agregar usuario
+- En la implementación se hace uso de merge
+- Se le da la funcionalidad desde el javascript
+
+Iniciar sesión
+- Se crea un nuevo controlador para desacoplar funciones
+
+HASH
+- El proceso de guardar contraseñas encriptadas irreversibles en la base.
+- La librería para HASH a utilizar es Argon2 (se agrega al pom.xml)
+- Se hace tanto en el registrar como en el logueo
+
+JWT
+- Se crea una clase, el código se lo pegó de otro proyecto (es una clase estandar)
+- Se agrega la dependencia jsonwebtoken en el pom.xml
+- Se utiliza el archivo properties para crear las variables que se usa en la clase
+    - Funcion CREATE --> Crea el JWT
+    - Funcion GETVALUE y GETKEY --> devolver la información que se le agregó al token
+- En el controlador de Auth se usa esta clase que implementa el JWT (con @AutoWired)
+- Se puede almacenar en el LocalStorage de JS el token.
+- Se debe asegurar que cuando se haga un request, esté autenticado con el token.
+- Se agrega la autenticación en el header de JS.
+- En el controlador se hace la validación de ese header, con @RequestHeader
+- jwtUtil.getKey() extrae el ID del Usuario
+- El curso es bastante básico en cuanto a seguridad, pero se recomienda indagar sobre
+    - Spring Security
+    - Control de errores (401, 500, etc).
